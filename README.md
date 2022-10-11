@@ -78,12 +78,46 @@ After Triggering, it should run successfully and the result will be shown on Gri
 
 ```
 def sqlite_to_csv():
-    con = sqlite3.connect(
-        '/home/moise-s/Documents/indicium/LightHouse/mod5_DE/airflow_tooltorial/data/Northwind_small.sqlite')  # connection
-    df = pd.read_sql_query('select * from "order"',
-                           con)
+    con = sqlite3.connect('data/Northwind_small.sqlite')
+    df = pd.read_sql_query('select * from "order"', con)
     df.to_csv(path_or_buf='data/output_orders.csv')
     con.close()
 ```
 
-2.
+2. Reading data from `OrderDetail` table and writing a file containing a filtered query (from tables `Order` and `OrderDetail`) to a `.csv` file:
+
+- Sum of `Quantity` sold to a `ShipCity = "Rio de Janeiro"`;
+
+So, function with query and file writing is as follows:
+
+```
+def sqlite_join():
+    con = sqlite3.connect('data/Northwind_small.sqlite')
+    df = pd.read_sql_query("""
+    select SUM(OrderDetail.quantity)
+    from "Order"
+    LEFT join OrderDetail
+    on "order"."Id" = OrderDetail.orderid
+    where "order"."shipcity" = "Rio de Janeiro";
+    """, con)
+    f = open("data/count.txt", "w+")
+    f.write(str(df.values).strip('[]'))
+    con.close()
+```
+
+Result of function running is file on `data/count.txt` with following content: `1893`.
+
+3. Added my e-mail to the variable `my_email` on AirFlow
+   ![image](images/variable.png)
+
+4. While running last task of DAG, called `export_final_output`, the file `final_output.txt` is created. Its content is:
+
+```
+bW9pc2VzLm5hc2NpbWVudG9AaW5kaWNpdW0udGVjaDE4OTM=
+```
+
+5. When executing DAG it is important to make sure they are in the correct order. That is, it was necessary to provide following code on `dags/desafio.py` file:
+
+```
+export_CSV >> join_count >> export_final_output
+```

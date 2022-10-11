@@ -5,8 +5,7 @@ import sqlite3
 
 
 def sqlite_to_csv():
-    con = sqlite3.connect(
-        '/home/moise-s/Documents/indicium/LightHouse/mod5_DE/airflow_tooltorial/data/Northwind_small.sqlite')  # connection
+    con = sqlite3.connect('data/Northwind_small.sqlite')  # connection
     df = pd.read_sql_query('select * from "order"',
                            con)
     df.to_csv(path_or_buf='data/output_orders.csv')
