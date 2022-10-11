@@ -1,4 +1,11 @@
 airflow-data
+standalone_admin_password.txt
+logs
+venv
+webserver_config.py
+airflow.cfg
+airflow.db
+
 
 # These are some examples of commonly ignored file patterns.
 # You should customize this list as applicable to your project.
@@ -49,4 +56,5 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
 
